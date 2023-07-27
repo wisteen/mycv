@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>form</title>
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<!-- Font-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xxx" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="{% static 'agreco/css/normalize.css'%}" />
+	<!-- <link rel="stylesheet" type="text/css" href="css/demo.css" /> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'agreco/css/component.css' %}" />
+
+	<!-- <link rel="stylesheet" type="text/css" href="css/opensans-font.css"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'agreco/fonts/material-design-iconic-font/css/material-design-iconic-font.min.css' %}">
+	<!-- Main Style Css -->
+    <link rel="stylesheet" href="{% static 'agreco/css/style.css' %}"/>
+    <style type="text/css">
+    	    .custom-file-label::after {
+      content: "Browse";
+    }
+    
+    .custom-file-input:focus ~ .custom-file-label::after {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    .custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.custom-file-input::before {
+  content: 'Click to Upload file here...';
+  display: inline-block;
+  /*background: linear-gradient(top, #f9f9f9, #e3e3e3);*/
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+.custom-file-input:hover::before {
+  border-color: black;
+  border-color: #cdc;
+}
+.custom-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+[type="file"] {
+  height: 0;
+  overflow: hidden;
+  width: 0;
+}
+
+[type="file"] + label {
+  background: #f15d22;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+	font-family: 'Rubik', sans-serif;
+	font-size: inherit;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  outline: none;
+  padding: 1rem 50px;
+  position: relative;
+  transition: all 0.3s;
+  vertical-align: middle;
+  
+  &:hover {
+    background-color: darken(#f15d22, 10%);
+  }
+  
+  &.btn-1 {
+    background-color: #f79159;
+    box-shadow: 0 6px darken(#f79159, 10%);
+    transition: none;
+
+    &:hover {
+      box-shadow: 0 4px darken(#f79159, 10%);
+      top: 2px;
+    }
+  }
+  
+  &.btn-2 {
+    background-color: #99c793;
+    border-radius: 50px;
+    overflow: hidden;
+    
+    &::before {
+      color: #fff;
+      content: "\f382";
+      font-family: "Font Awesome 5 Pro";
+      font-size: 100%;
+      height: 100%;
+      right: 130%;
+      line-height: 3.3;
+      position: absolute;
+      top: 0px;
+      transition: all 0.3s;
+    }
+
+    &:hover {
+      background-color: darken(#99c793, 30%);
+        
+      &::before {
+        right: 75%;
+      }
+    }
+  }
+  
+  &.btn-3 {
+    background-color: #ee6d9e;
+    border-radius: 0;
+    overflow: hidden;
+    
+    span {
+      display: inline-block;
+      height: 100%;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    &::before {
+      color: #fff;
+      content: "\f382";
+      font-family: "Font Awesome 5 Pro";
+      font-size: 130%;
+      height: 100%;
+      left: 0;
+      line-height: 2.6;
+      position: absolute;
+      top: -180%;
+      transition: all 0.3s;
+      width: 100%;
+    }
+
+    &:hover {
+      background-color: darken(#ee6d9e, 30%);
+      
+      span {
+        transform: translateY(300%);
+      }
+        
+      &::before {
+        top: 0;
+      }
+    }
+  }
+}
+
+// Demo specific styles below
+body {
+  font-family: 'Literata', serif;
+  font-size: 18px;
+  line-height: 1.3;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.wrapper {
+  background-color: #fff;
+  border-radius: 1rem;
+  margin: 0 auto;
+  max-width: 500px;
+  padding: 2rem;
+  width: 100%;
+}
+
+
+
+
+
+
+
+    .btn-hover{
+        transition: 1s;
+    }
+    .btn-hover:hover{
+        background-color: rgb(29, 146, 107);
+        color: #fff;
+    }
+    .fa{
+        transition: 1s;
+    }
+    .btn-hover:hover .fa{
+        color: #fff;
+        background-color: #fff;
+        border-radius: 50%;
+        padding: 20px;
+    }
+    .add-me{
+        color:rgb(29, 146, 107);
+    }
+
+    .form-control, .form-select{
+        border: none;
+        border-bottom: 2px solid gray;
+        outline: none;
+        height: 50px;
+        color: rgb(29, 146, 107);
+    }
+    .form-control:focus{
+        box-shadow: none;
+        border-bottom:2px solid rgb(29, 146, 107);
+    }
+
+    .form-select:focus{
+        box-shadow: none;
+        border-bottom:2px solid rgb(29, 146, 107);
+    }
+
+    .custom-file-input {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+      
+      .custom-file-input + label {
+        cursor: pointer;
+      }
+      
+      .custom-file-input:focus + label,
+      .custom-file-input.has-file + label {
+        outline: 1px dotted #000;
+        outline: -webkit-focus-ring-color auto 5px;
+      }
+      
+      .custom-file-input + label svg {
+        fill: #000;
+        vertical-align: middle;
+      }
+      
+      .custom-file-input.has-file + label svg {
+        fill: #29b573;
+      }
+      
+      .custom-file-input + label,
+      .custom-file-input.has-file + label {
+        background-color: #fff;
+        border-color: #ccc;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        padding: 8px 12px;
+        display: inline-flex;
+        align-items: center;
+      }
+      
+      .custom-file-input.has-file + label {
+        border-color: #29b573;
+      }
+      
+      .custom-file-input + label:hover {
+        background-color: #f8f8f8;
+      }
+      
+      .custom-file-input.has-file + label:hover {
+        background-color: #eef8f5;
+      }
+      
+      #individualPitchDeckFilename {
+        margin-left: 10px;
+      }
+
+      #background-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+      }
+      #popupContainer {
+  display: none; /* Hide pop-up by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9999; /* Ensure pop-up appears above other elements */
+}
+
+#popupContent {
+  background-color: #fff;
+  padding: 20px;
+  width: 100%;
+  margin: 100px auto; /* Center the pop-up */
+}
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+    </style>
+</head>
+<body>
+	<div class="page-content">
+		<div class="form-v1-content">
+			<div class="wizard-form">
+		        <form class="form-register" id="form" enctype="multipart/form-data" action="#" method="post">
+		        	<div id="form-total">
+		        		{% csrf_token %}
+						<!-- SECTION 2 -->
+			            <h2>
+			            	<p class="step-icon"><span>01</span></p>
+			            	<span class="step-text">Download Form</span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+			                	<div class="wizard-header">
+									<h3 class="heading">Download and fill the form</h3>
+									<p>To register, please follow these steps: <br>
+										Download the registration form that suits your needs. <br>
+										fill out the downloaded form completely.</p>
+								</div>
+								<div class="row">
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span>Subsidiary Organization.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span>Cooperative Society/Farmers Association.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span>Produce Buyer/Off taker organization.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span>Produce Seller.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span>Register as a Investors.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									<div class="col-12 p-4 border  d-flex justify-content-between">
+										<span> African in the Diaspora/Tourist.</span>
+										<span>
+										  <a href="#" class=" p-4 " download>
+										    <i class="zmdi zmdi-download"></i>
+										  </a>
+										</span>
+										 
+									</div>
+
+									</div>
+							
+							</div>
+			            </section>
+			            <!-- SECTION 2 -->
+			            <h2>
+			            	<p class="step-icon"><span>02</span></p>
+			            	<span class="step-text">Upload Documents</span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+			                	<div class="wizard-header">
+									<h3 class="heading">Upload the Necessary Documents</h3>
+									<p>If you have filled the form correctly kindly upload select the registration type and upload documents.</p>
+								</div>
+								<div class="row">
+			                		
+
+
+
+							        <div class="form-holde ">
+										<label class="special-label">Select Category:</label>
+										<select id="registrationType" name="registrationType" onchange="toggleForm()">
+									   <option value="">-------- SELECT REGISTRATION TYPE --------</option>
+							          <option value="1">Subsidiary Organization</option>
+							          <option value="2">Cooperative Society/Farmers Association.</option>
+							          <option value="3">Produce Buyer/Off taker organization.</option>
+							          <option value="4">Produce Seller</option>
+							          <option value="5">Register as a Investors.</option>
+							          <option value="6">African in the Diaspora/Tourist.</option>
+										</select>
+									</div>
+
+									<div class="row">
+										<div id="1Form" style="display: none;height: 300px">
+											<p>Each Subsidiary Organization is meant to have at least 5 cooperative societies affiliated to them, this form should help them onboard their organization in our portal/database.</p>
+											<input type="file" name="form" id="file1" class="pt-2" />
+											  <label for="file1" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+											  <input type="file" name="geo" id="geo1" class="pt-2"/>
+											  <label for="geo1" class="btn-3 mt-2">
+											    <span>Upload geo-mapped farmland</span>
+											  </label>
+
+											  <input type="file" name="list1" id="list1" class="pt-2"/>
+											  <label for="list1" class="btn-3 mt-2">
+											    <span>Upload 33 farmers list</span>
+											  </label>
+
+											</div>
+										<div id="2Form" style="display: none;">
+											<p>The purpose of this form is to connect with cooperative societies across the Africa starting from Nigeria, they need to meet the requirements for projects to be carried out in such a location.</p>
+											  <input type="file" name="form" id="file2" class="pt-2" />
+											  <label for="file2" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+											  <input type="file" name="geo" id="geo2" class="pt-2" />
+											  <label for="geo2" class="btn-3 mt-2">
+											    <span>Upload geo-mapped farmland</span>
+											  </label>
+											<input type="file" name="mem" id="mem2" class="pt-2" />
+											  <label for="mem2" class="btn-3 mt-2">
+											    <span>Upload agreement/memorandum</span>
+
+											  </label>
+
+											  <input type="file" name="deed" id="deed2" class="pt-2" />
+											  <label for="deed2" class="btn-3 mt-2">
+											    <span>Upload farmland Deed of Lease</span>
+											  </label>
+											  
+										</div>
+										<div id="3Form" style="display: none;">
+											<p>The purpose of this form is to connect off takers organizations that will be interested in buying produce, this will be the medium through which they can apply or submit their request to enable us contact them for customized crop production.</p>
+											  <input type="file" name="form" id="file3" class="pt-2" />
+											  <label for="file3" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+										</div>
+										<div id="4Form" style="display: none;">
+											<p>The objective of this form is to connect farmers to market place where some of our buyers can off take their farm produce.</p>
+											  <input type="file" name="form" id="file4" class="pt-2" />
+											  <label for="file4" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+										</div>
+										<div id="5Form" style="display: none;">
+											<p>The objective of this form is to ensure that all investment opportunities that portfolio investment partners are looking to tap into can be accessed, investment partners will receive emails of available investment opportunities within the boundaries of the scope and masterplan of our company's project.</p>
+											  <input type="file" name="form" id="file5" class="pt-2" />
+											  <label for="file5" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+										</div>
+										<div id="6Form" style="display: none;">
+											<p>The objective of this form is to connect Africans in the diaspora with agribusiness investment opportunities that exists in any African nation of their choice through which they can go on tour to visit projects which they have invested in or they are hoping to invest.</p>
+											  <input type="file" name="form" id="file6" class="pt-2" />
+											  <label for="file6" class="btn-3 mt-2">
+											    <span>Select and Upload File</span>
+											  </label>
+										</div>
+									</div>
+			                	</div>
+							</div>
+			            </section>
+
+
+			            <!-- SECTION 1 -->
+			            <h2>
+			            	<p class="step-icon"><span>03</span></p>
+			            	<span class="step-text">Peronal Infomation</span>
+			            </h2>
+			            <section>
+			                <div class="inner">
+			                	<div class="wizard-header">
+									<h3 class="heading">Peronal Infomation</h3>
+									<p>Please enter your infomation and proceed to the next step so we can build your accounts.</p>
+								</div>
+								<div class="form-row">
+									<div class="form-holder">
+										<fieldset>
+											<legend>First Name</legend>
+											<input type="text" class="" id="first-name" name="firstname" placeholder="First Name" required>
+										</fieldset>
+									</div>
+									<div class="form-holder">
+										<fieldset>
+											<legend>Last Name</legend>
+											<input type="text" class="" id="last-name" name="lastname" placeholder="Last Name" required>
+										</fieldset>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-holder form-holder-2">
+										<fieldset>
+											<legend>Your Email</legend>
+											<input type="text" name="your_email" id="your_email" class="" pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}" placeholder="example@email.com" required>
+										</fieldset>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-holder form-holder-2">
+										<fieldset>
+											<legend>Phone Number</legend>
+											<input type="text" class="" id="phone" name="phone" placeholder="+123 456 7890" required>
+										</fieldset>
+									</div>
+								</div>
+								<div class="form-row form-row-date">
+									<div class="form-holder form-holder-2">
+										<select name="country" id="countries">
+											<option value="" disabled selected>country</option>
+										
+										</select>
+									
+										<select name="state" id="state">
+											<option value="" disabled selected>State/Region</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-holder form-holder-2">
+										<input type="text" class=" input-border" id="Comment" name="Comment" placeholder="Comment" required>
+									</div>
+			            	<input type="submit" class="btn btn-outline-success btn-hover" id="submit" name="submit">
+
+								</div>
+							</div>
+			            </section>
+
+
+		        	</div>
+		        </form>
+			</div>
+		</div>
+	</div>
+
+	<div id="popupContainer">
+	  <div id="popupContent" class="" style="display: grid; justify-content: center;">
+	    <i class="fa fa-check bg-success text-white p-4 text-center fs-4">.</i  >
+	    <p class="d-flex align-items-center justify-content-center text-center p-4">We have received your message check your email for updates</p>
+	    <a href="" id="popupClose" class="btn btn-secondary">Close</button>
+	  </div>
+	</div>
+
+	<script src="{% static 'agreco/js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'agreco/js/jquery.steps.js' %}"></script>
+	<script src="{% static 'agreco/js/main.js' %}"></script>
+  <script type="text/javascript">
+		// Close the pop-up when close button is clicked
+			document.getElementById('popupClose').addEventListener('click', function() {
+		  	document.getElementById('popupContainer').style.display = 'none';
+		  // console.log("done")
+		});
+  </script>  
+	<script type="text/javascript">
+		function toggleForm() {
+  var registrationType = document.getElementById("registrationType").value;
+
+
+  // Hide all registration forms
+  document.getElementById("1Form").style.display = "none";
+  document.getElementById("2Form").style.display = "none";
+  document.getElementById("3Form").style.display = "none";
+  document.getElementById("4Form").style.display = "none";
+  document.getElementById("5Form").style.display = "none";
+  document.getElementById("6Form").style.display = "none";
+
+  // Show the selected registration form
+  document.getElementById(registrationType + "Form").style.display = "block";
+
+	}
+	let rt  = document.getElementById("registrationType");
+	let form =  document.getElementById("form");
+	let initialfm = form.id;
+	rt.addEventListener("change", function(){
+	  form.id = rt.value !== ''? rt.value: initialfm;
+	}) 
+
+	</script>
+	<script type="text/javascript">
+		 document.addEventListener('DOMContentLoaded', function(){
+		fetch("{% static 'agreco/js/africa.json' %}")
+		.then(function(response) {
+		    // Check if the response is successful
+		    if (response.ok) {
+		      // Parse the response as JSON
+		      return response.json();
+		    } else {
+		      // Handle the error if the response is not successful
+		      throw new Error('Error: ' + response.status);
+		    }
+  })
+  .then(function(data) {
+    // Process the retrieved data
+    data.countries.forEach((ele) => {
+    	// console.log(country)
+		const country = document.getElementById('countries')
+
+    	country.insertAdjacentHTML('beforeend', `<option value='${ele.name}'>${ele.name}</option>`);
+
+    })
+
+    // drop state
+	let country = document.getElementById('countries')
+	const stateDropdown = document.getElementById('state');
+    country.addEventListener("change",function(){
+    	const selectedCountry = country.value;
+        stateDropdown.innerHTML = '<option value="">Select a state/region</option>';
+
+        if (selectedCountry) {
+            const selectedCountryData = data.countries.find(country => country.name === selectedCountry);
+            if (selectedCountryData) {
+              selectedCountryData.states.forEach(state => {
+                  const option = document.createElement('option');
+                  option.value = state;
+                  option.textContent = state;
+                  stateDropdown.appendChild(option);
+
+
+              });
+              stateDropdown.disabled = false;
+            } else {
+               stateDropdown.disabled = true;
+            }
+        }
+    })
+})
+
+  .catch(function(error) {
+    // Handle any errors that occurred during the fetch request
+    console.log(error);
+  });
+
+
+});
+
+
+
+const finishLink = document.querySelector('.zmdi-check');
+const submitButton = document.getElementById('submit');
+console.log(finishLink)
+finishLink.addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent the default behavior of the anchor tag
+  submitButton.click(); // Trigger a click event on the submit button
+});
+
+	</script>
+
+	<script type="text/javascript">
+$(document).on('submit', '#form', function(e){
+    e.preventDefault();
+
+     $('#loader').show();
+    const formData = new FormData(this);
+    
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:register_agreco' %}",
+            data:formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+            responseType: 'blob'  // Set the response type to 'blob'
+          },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+
+            },
+
+         error: function(xhr, textStatus, error) {
+        console.log(xhr.statusText);
+        if (xhr.statusText ==="OK"){
+                $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+
+        }
+        // Handle error response
+      }
+        }
+    )
+})
+
+	</script>
+
+</body>
+</html>

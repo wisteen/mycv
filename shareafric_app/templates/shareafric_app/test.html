@@ -1,0 +1,920 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Form</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css'%}">
+      <!-- Bootstrap core CSS -->
+   <link rel="icon" type="image/x-icon" href="{% static 'images/vicon.png' %}">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <style>
+    .btn-hover{
+        transition: 1s;
+    }
+    .btn-hover:hover{
+        background-color: rgb(29, 146, 107);
+        color: #fff;
+    }
+    .fa{
+        transition: 1s;
+    }
+    .btn-hover:hover .fa{
+        color: #fff;
+        background-color: #fff;
+        border-radius: 50%;
+        padding: 20px;
+    }
+    .add-me{
+        color:rgb(29, 146, 107);
+    }
+
+    .form-control, .form-select{
+        border: none;
+        border-bottom: 2px solid gray;
+        outline: none;
+        height: 50px;
+        color: rgb(29, 146, 107);
+    }
+    .form-control:focus{
+        box-shadow: none;
+        border-bottom:2px solid rgb(29, 146, 107);
+    }
+
+    .form-select:focus{
+        box-shadow: none;
+        border-bottom:2px solid rgb(29, 146, 107);
+    }
+
+    .custom-file-input {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+      
+      .custom-file-input + label {
+        cursor: pointer;
+      }
+      
+      .custom-file-input:focus + label,
+      .custom-file-input.has-file + label {
+        outline: 1px dotted #000;
+        outline: -webkit-focus-ring-color auto 5px;
+      }
+      
+      .custom-file-input + label svg {
+        fill: #000;
+        vertical-align: middle;
+      }
+      
+      .custom-file-input.has-file + label svg {
+        fill: #29b573;
+      }
+      
+      .custom-file-input + label,
+      .custom-file-input.has-file + label {
+        background-color: #fff;
+        border-color: #ccc;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        padding: 8px 12px;
+        display: inline-flex;
+        align-items: center;
+      }
+      
+      .custom-file-input.has-file + label {
+        border-color: #29b573;
+      }
+      
+      .custom-file-input + label:hover {
+        background-color: #f8f8f8;
+      }
+      
+      .custom-file-input.has-file + label:hover {
+        background-color: #eef8f5;
+      }
+      
+      #individualPitchDeckFilename {
+        margin-left: 10px;
+      }
+
+      #background-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+      }
+      #popupContainer {
+  display: none; /* Hide pop-up by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9999; /* Ensure pop-up appears above other elements */
+}
+
+#popupContent {
+  background-color: #fff;
+  padding: 20px;
+  width: 100%;
+  margin: 100px auto; /* Center the pop-up */
+}
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+ <div id="loader" class="loader"></div>
+<div class="container bg-light">
+       <header>
+      <nav class="navbar navbar-light bg-light">
+        <div class="container justify-content-center align-items-center">
+          <a class="navbar-brand  justify-content-center align-items-center" href="#">
+            <img src="{% static 'images/shareafric.png' %}" class="img-fluid" alt="Logo">
+          </a>
+        </div>
+      </nav>
+    </header>
+    <form method="post" id="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="registrationType">Registration Type: They are no restriction to what area you will fill, but make sure you fill in the approprate information for consideration!</label>
+        <select class="form-control" id="registrationType" onchange="toggleForm()">
+          <option value="">-------- SELECT REGISTRATION TYPE --------</option>
+          <option value="individual">Register as an Individual</option>
+          <option value="sme">Register as an SME</option>
+          <option value="corporate">Register as a Corporate Organization</option>
+          <option value="mentor">Register as a Mentor</option>
+          <option value="elearning">Enroll for our Free E-learning Programs</option>
+          <option value="tourist">Register as a Tourist</option>
+        </select>
+      </div>
+
+<!-- Individual Registration Form -->
+<div id="individualForm" style="display: none;">
+    <h4>Register as an Individual</h4>
+    <div class="form-group">
+      <label for="individualName">Name:</label>
+      <input type="text" class="form-control" id="individualName" name="individualName" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label for="individualCountry">Country of Origin:</label>
+      <input type="text" class="form-control" id="individualCountry"  name="individualCountry" placeholder="Enter your country of origin">
+    </div>
+    <div class="form-group">
+      <label for="individualState">State/Region:</label>
+      <input type="text" class="form-control" id="individualState" name="individualState" placeholder="Enter your state/region">
+    </div>
+    <div class="form-group">
+      <label for="individualInterest">Tell us why you're interested in becoming a member of our organization:</label>
+      <textarea class="form-control" id="individualInterest" name="individualInterest" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="individualSector">Tell us the sector of entrepreneurs you're looking forward to connecting with:</label>
+      <select class="form-control" id="individualSector" name="individualSector" multiple>
+        <option>Advisory Services and business consulting</option>
+        <option>Agribusiness</option>
+        <option>Agri Tech</option>
+        <option>AI and ChatGPT Automation</option>
+        <option>Automobile engineering</option>
+        <option>Biochemistry</option>
+        <option>Business Administration</option>
+        <option>Business process design and automation</option>
+        <option>Digital marketing</option>
+        <option>Emotional Intelligence coaching</option>
+        <option>Fintech</option>
+        <option>Financial accounting</option>
+        <option>Educational development</option>
+        <option>E-learning programs</option>
+        <option>Human Resource Management</option>
+        <option>Online coaching</option>
+        <option>Public speaking</option>
+        <option>Sales and marketing</option>
+        <option>Software as a Service (SAAS)</option>
+        <option>Marketing and Automation</option>
+        <option>Market Research and Development</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="individualAdditionalInfo">Do you have further information you would like to share with us?</label>
+      <textarea class="form-control" id="individualAdditionalInfo" name="individualAdditionalInfo" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="individualEmail">Email address:</label>
+      <input type="email" class="form-control" id="individualEmail" name="individualEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="individualPhone">Phone No:</label>
+      <input type="text" class="form-control" id="individualPhone" name="individualPhone" placeholder="Enter your phone number">
+    </div>
+    <div class="form-group">
+      <label for="individualLinkedIn">LinkedIn profile:</label>
+      <input type="text" class="form-control" id="individualLinkedIn" name="individualLinkedIn" placeholder="Enter your LinkedIn profile URL">
+    </div>
+    <div class="form-group">
+      <label for="individualFacebook">Facebook profile:</label>
+      <input type="text" class="form-control" id="individualFacebook" name="individualFacebook" placeholder="Enter your Facebook profile URL">
+    </div>
+    <div class="form-group">
+      <label for="individualInstagram">Instagram handle:</label>
+      <input type="text" class="form-control" id="individualInstagram" name="individualInstagram" placeholder="Enter your Instagram handle">
+    </div>
+  </div>
+  
+
+<!-- SME Registration Form -->
+<div id="smeForm" style="display: none;">
+    <h4>Register as an SME</h4>
+    <div class="form-group">
+      <label for="smeFirstName">First Name:</label>
+      <input type="text" class="form-control" id="smeFirstName" name="smeFirstName" placeholder="Enter your first name">
+    </div>
+    <div class="form-group">
+      <label for="smeLastName">Last Name:</label>
+      <input type="text" class="form-control" id="smeLastName" name="smeLastName" placeholder="Enter your last name">
+    </div>
+    <div class="form-group">
+      <label for="smeEmail">Email address:</label>
+      <input type="email" class="form-control" id="smeEmail" name="smeEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="smePhone">Phone No:</label>
+      <input type="text" class="form-control" id="smePhone" name="smePhone" placeholder="Enter your phone number">
+    </div>
+    <div class="form-group">
+      <label for="smeRegistrationNo">Business registration no:</label>
+      <input type="text" class="form-control" id="smeRegistrationNo" name="smeRegistrationNo" placeholder="Enter your business registration number">
+    </div>
+    <div class="form-group">
+      <label for="smeAddress">Business address:</label>
+      <input type="text" class="form-control" id="smeAddress" name="smeAddress" placeholder="Enter your business address">
+    </div>
+    <div class="form-group">
+      <label for="smeProject">Describe your project for us in one sentence:</label>
+      <textarea class="form-control" id="smeProject" name="smeProject" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="smeProjectDuration">How long have you started the project:</label>
+      <input type="text" class="form-control" id="smeProjectDuration" name="smeProjectDuration" placeholder="Enter the duration you have started the project">
+    </div>
+    <div class="form-group">
+      <label for="smeTractions">What are your recorded tractions and Milestones:</label>
+      <textarea class="form-control" id="smeTractions" name="smeTractions" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="smeStartupStage">What's the stage of your startup:</label>
+      <select class="form-control" id="smeStartupStage" name="smeStartupStage">
+        <option>Idea Stage</option>
+        <option>Developed Prototype under Test running</option>
+        <option>Pre Seed</option>
+        <option>Growth Stage</option>
+        <option>Series A</option>
+        <option>Series B</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="smeCapital">How much investment are you looking forward to raise as your start-up capital requirements:</label>
+      <input type="text" class="form-control" id="smeCapital" name="smeCapital" placeholder="Enter the amount of investment required">
+    </div>
+    <div class="form-group">
+      <label for="smeFundsInvestment">What are the breakdowns of what the funds will be invested in:</label>
+      <textarea class="form-control" id="smeFundsInvestment" name="smeFundsInvestment" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="smePitchDeck">Do you have a Pitch Deck:</label>
+      <input type="file" class="form-control-file" id="smePitchDeck" name="smePitchDeck">
+    </div>
+    <div class="form-group">
+      <label for="smeFinancialModel">Kindly upload your financial Model:</label>
+      <input type="file" class="form-control-file" id="smeFinancialModel" name="smeFinancialModel">
+    </div>
+    <div class="form-group">
+      <label for="smeCACDocuments">Kindly upload your CAC documents:</label>
+      <input type="file" class="form-control-file" id="smeCACDocuments" name="smeCACDocuments">
+    </div>
+    <div class="form-group">
+      <label for="smeValuationReport">Upload your valuation report:</label>
+      <input type="file" class="form-control-file" id="smeValuationReport" name="smeValuationReport">
+    </div>
+    <div class="form-group">
+      <label for="smeBusinessRegistrationDate">Date of business registration:</label>
+      <input type="date" class="form-control" id="smeBusinessRegistrationDate" name="smeBusinessRegistrationDate">
+    </div>
+  </div>
+  
+
+      <!-- Corporate Organization Registration Form -->
+<div id="corporateForm" style="display: none;">
+    <h4>Register as a Corporate Organization</h4>
+    <div class="form-group">
+      <label for="corporateFirstName">First Name:</label>
+      <input type="text" class="form-control" id="corporateFirstName" name="corporateFirstName" placeholder="Enter your first name">
+    </div>
+    <div class="form-group">
+      <label for="corporateLastName">Last Name:</label>
+      <input type="text" class="form-control" id="corporateLastName" name="corporateLastName" placeholder="Enter your last name">
+    </div>
+    <div class="form-group">
+      <label for="corporateEmail">Email address:</label>
+      <input type="email" class="form-control" id="corporateEmail" name="corporateEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="corporatePhone">Phone No:</label>
+      <input type="text" class="form-control" id="corporatePhone" name="corporatePhone" placeholder="Enter your phone number">
+    </div>
+    <div class="form-group">
+      <label for="corporateRegistrationNo">Business registration no:</label>
+      <input type="text" class="form-control" id="corporateRegistrationNo" name="corporateRegistrationNo" placeholder="Enter your business registration number">
+    </div>
+    <div class="form-group">
+      <label for="corporateAddress">Business address:</label>
+      <input type="text" class="form-control" id="corporateAddress" name="corporateAddress" placeholder="Enter your business address">
+    </div>
+    <div class="form-group">
+      <label for="corporateProject">Describe your project for us in one sentence:</label>
+      <textarea class="form-control" id="corporateProject" name="corporateProject" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="corporateProjectDuration">How long have you started the project:</label>
+      <input type="text" class="form-control" id="corporateProjectDuration" name="corporateProjectDuration" placeholder="Enter the duration you have started the project">
+    </div>
+    <div class="form-group">
+      <label for="corporateTractions">What are your recorded tractions and Milestones:</label>
+      <textarea class="form-control" id="corporateTractions" name="corporateTractions" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="corporateStartupStage">What's the stage of your startup:</label>
+      <select class="form-control" id="corporateStartupStage" name="corporateStartupStage">
+        <option>Idea Stage</option>
+        <option>Developed Prototype under Test running</option>
+        <option>Pre Seed</option>
+        <option>Growth Stage</option>
+        <option>Series A</option>
+        <option>Series B</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="corporateCapital">How much investment are you looking forward to raise as your start-up capital requirements:</label>
+      <input type="text" class="form-control" id="corporateCapital" name="corporateCapital" placeholder="Enter the amount of investment required">
+    </div>
+    <div class="form-group">
+      <label for="corporateFundsInvestment">What are the breakdowns of what the funds will be invested in:</label>
+      <textarea class="form-control" id="corporateFundsInvestment1" name="corporateFundsInvestment1" rows="5"></textarea>
+    </div>
+
+      
+
+      <div class="form-group">
+        <label for="corporatePitchDeck">Do you have a Pitch Deck:</label>
+        <input type="file" class="form-control-file" id="corporatePitchDeck" name="corporatePitchDeck">
+      </div>
+      <div class="form-group">
+        <label for="corporateFinancialModel">Kindly upload your financial Model:</label>
+        <input type="file" class="form-control-file" id="corporateFinancialModel" name="corporateFinancialModel">
+      </div>
+      <div class="form-group">
+        <label for="corporateCACDocuments">Kindly upload your CAC documents:</label>
+        <input type="file" class="form-control-file" id="corporateCACDocuments" name="corporateCACDocuments">
+      </div>
+      <div class="form-group">
+        <label for="corporateValuationReport">Upload your valuation report:</label>
+        <input type="file" class="form-control-file" id="corporateValuationReport" name="corporateValuationReport">
+      </div>
+      <div class="form-group">
+        <label for="corporateBusinessRegistrationDate">Date of business registration:</label>
+        <input type="date" class="form-control" id="corporateBusinessRegistrationDate" name="corporateBusinessRegistrationDate">
+      </div>
+</div>
+
+  
+
+<!-- Mentor Registration Form -->
+<div id="mentorForm" style="display: none;">
+    <h4>Register as a Mentor</h4>
+    <div class="form-group">
+      <label for="mentorName">Full Name:</label>
+      <input type="text" class="form-control" id="mentorName" name="mentorName" placeholder="Enter your fullname">
+    </div>
+    <div class="form-group">
+      <label for="mentorCountry">Country of Origin:</label>
+      <input type="text" class="form-control" id="mentorCountry" name="mentorCountry" placeholder="Enter your country of origin">
+    </div>
+    <div class="form-group">
+      <label for="mentorRegion">State/Region:</label>
+      <input type="text" class="form-control" id="mentorRegion" name="mentorRegion" placeholder="Enter your state/region">
+    </div>
+    <div class="form-group">
+      <label for="mentorInterest">Tell us why you're interested in becoming a member of our organization:</label>
+      <textarea class="form-control" id="mentorInterest" name="mentorInterest" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="mentorSector">Tell us the sector of entrepreneurs you're looking forward to mentor:</label>
+      <select class="form-control" id="mentorSector" name="mentorSector" multiple>
+        <option value="Agribusiness">Agribusiness</option>
+        <option value="Agri Tech">Agri Tech</option>
+        <option value="Automobile engineering">Automobile engineering</option>
+        <option value="Biochemistry">Biochemistry</option>
+        <option value="Business Administration">Business Administration</option>
+        <option value="Business process design and automation">Business process design and automation</option>
+        <option value="Fintech">Fintech</option>
+        <option value="Financial accounting">Financial accounting</option>
+        <option value="Educational development">Educational development</option>
+        <option value="E-learning programs">E-learning programs</option>
+        <option value="Online coaching">Online coaching</option>
+        <option value="Public speaking">Public speaking</option>
+        <option value="Sales and marketing">Sales and marketing</option>
+        <option value="Digital marketing">Digital marketing</option>
+        <option class="Marketing and Automation">Marketing and Automation</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mentorAdditionalInfo">Tell us about you area of expertise and professional title:</label>
+      <textarea class="form-control" id="mentorAdditionalInfo" name="mentorAdditionalInfo" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="mentorEmail">Email address:</label>
+      <input type="email" class="form-control" id="mentorEmail" name="mentorEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="mentorPhone">Phone No:</label>
+      <input type="text" class="form-control" id="mentorPhone" name="mentorPhone" placeholder="Enter your phone number">
+    </div>
+    <div class="form-group">
+      <label for="mentorLinkedIn">LinkedIn profile:</label>
+      <input type="text" class="form-control" id="mentorLinkedIn" name="mentorLinkedIn" placeholder="Enter your LinkedIn profile URL">
+    </div>
+    <div class="form-group">
+      <label for="mentorFacebook">Facebook profile:</label>
+      <input type="text" class="form-control" id="mentorFacebook" name="mentorFacebook" placeholder="Enter your Facebook profile URL">
+    </div>
+    <div class="form-group">
+      <label for="mentorInstagram">Instagram handle:</label>
+      <input type="text" class="form-control" id="mentorInstagram" name="mentorInstagram" placeholder="Enter your Instagram handle">
+    </div>
+  </div>
+  
+
+<!-- E-Learning Registration Form -->
+<div id="elearningForm" style="display: none;">
+    <h4>Enroll for our free E-learning Programs</h4>
+    <div class="form-group">
+      <label for="elearningFirstName">First Name:</label>
+      <input type="text" class="form-control" id="elearningFirstName" name="elearningFirstName" placeholder="Enter your first name">
+    </div>
+    <div class="form-group">
+      <label for="elearningLastName">Last Name:</label>
+      <input type="text" class="form-control" id="elearningLastName" name="elearningLastName" placeholder="Enter your last name">
+    </div>
+    <div class="form-group">
+      <label for="elearningEmail">Email:</label>
+      <input type="email" class="form-control" id="elearningEmail" name="elearningEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="elearningUsername">Username:</label>
+      <input type="text" class="form-control" id="elearningUsername" name="elearningUsername" placeholder="Choose a username">
+    </div>
+    <div class="form-group">
+      <label for="elearningPassword">Password:</label>
+      <input type="password" class="form-control" id="elearningPassword" name="elearningPassword" placeholder="Choose a password">
+    </div>
+    
+    <div class="form-group">
+    <label for="elearningInterest">Why are you interested in our free E-learning Programs:</label>
+    <select class="form-control" name="elearningInterest" id="elearningInterest" multiple>
+        <option value="improveCapacity">To help improve on my professional and corporate capacity.</option>
+        <option value="dreamJob">To help me get my dream job.</option>
+        <option value="paidInternship">To help me access opportunities for paid internship opportunities.</option>
+        <option value="startupBusiness">To help me start up my new business.</option>
+        <option value="strengthenLeadership">To strengthen my leadership capabilities.</option>
+        <option value="allOfTheAbove">All of the above.</option>
+    </select>
+</div>
+
+    <div class="form-group">
+      <label for="elearningAreas">What areas of study are you interested in:</label>
+      <select class="form-control" id="elearningAreas" name="elearningAreas" >
+        <option value="">----SELECT-----</option>
+        <option value="agribusiness">Basic Agribusiness Professional Certificate Program</option>
+        <option value="entrepreneurship">Entrepreneurship Development program</option>
+        <option value="leadership">Advance Leadership professional certificate programs</option>
+        <option value="socialEnterprise">Social Enterprise Management</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="elearningCompany">Do you have a registered company:</label>
+      <input type="text" class="form-control" id="elearningCompany" name="elearningCompany" placeholder="Enter the name of your company">
+    </div>
+
+    <div class="form-group">
+      <label for="elearningInterests">Do you have any interests you would like to communicate with us to help us tailor your online study for achieving your personal goals:</label>
+      <textarea class="form-control" id="elearningInterests" name="elearningInterests" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="elearningCountry">Country of Origin:</label>
+      <input type="text" class="form-control" id="elearningCountry" name="elearningCountry" placeholder="Enter your country of origin">
+    </div>
+    <div class="form-group">
+      <label for="elearningRegion">Region:</label>
+      <input type="text" class="form-control" id="elearningRegion" name="elearningRegion" placeholder="Enter your region">
+    </div>
+    <div class="form-group">
+      <label for="elearningContact">How can we connect you:</label>
+      <div class="form-group">
+        <select class="form-control" name="elearningContact" id="elearningContact">
+          <option value="email">Email</option>
+          <option value="phone">Phone No</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+      <label for="elearningPhone">Please kindly provide us with your phone number:</label>
+      <input type="text" class="form-control" id="elearningPhone" name="elearningPhone" placeholder="Enter your phone number">
+    </div>
+ 
+  </div>
+  <!-- End of E-Learning Registration Form -->
+  </div>
+
+<!-- Tourist Registration Form -->
+<div id="touristForm" style="display: none;">
+    <h4>Register as a Tourist</h4>
+    <div class="form-group">
+      <label for="touristName">Name:</label>
+      <input type="text" class="form-control" id="touristName" name="touristName" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label for="touristCountry">Country of Origin:</label>
+      <input type="text" class="form-control" id="touristCountry" name="touristCountry" placeholder="Enter your country of origin">
+    </div>
+    <div class="form-group">
+      <label for="touristRegion">State/Region:</label>
+      <input type="text" class="form-control" id="touristRegion" name="touristRegion" placeholder="Enter your state/region">
+    </div>
+    <div class="form-group">
+      <label for="touristInterest">Tell us why you're interested in going for an investment tour:</label>
+      <select class="form-control" id="touristInterest" name="touristInterest" multiple>
+        <option value="To impact the next generation of leaders">To impact the next generation of leaders.</option>
+        <option value="To nurture young talented upcoming entrepreneurs">To nurture young talented upcoming entrepreneurs.</option>
+        <option value="To connect with young like-minded professionals for collaboration and partnerships">To connect with young like-minded professionals for collaboration and partnerships.</option>
+        <option value="To mentor and invest in a group of young entrepreneurs">To mentor and invest in a group of young entrepreneurs.</option>
+        <option value="All of the above">All of the above.</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="touristSector">Tell us the sector of entrepreneurs you're looking forward to mentor and invest in:</label>
+      <select class="form-control" id="touristSector" name="touristSector" multiple>
+          <option value="Advisory Services and Business Consultancy">Advisory Services and Business Consultancy</option>
+          <option value="Agribusiness">Agribusiness</option>
+          <option value="Agri Tech">Agri Tech</option>
+          <option value="AI and ChatGPT Automation">AI and ChatGPT Automation</option>
+          <option value="Automobile Engineering">Automobile Engineering</option>
+          <option value="Biochemistry">Biochemistry</option>
+          <option value="Business Administration">Business Administration</option>
+          <option value="Business Process Design and Automation">Business Process Design and Automation</option>
+          <option value="Digital Marketing">Digital Marketing</option>
+          <option value="Emotional Intelligence Coaching">Emotional Intelligence Coaching</option>
+          <option value="Fintech">Fintech</option>
+          <option value="Financial Accounting">Financial Accounting</option>
+          <option value="Educational Development">Educational Development</option>
+          <option value="E-learning Programs">E-learning Programs</option>
+          <option value="Human Resource Management">Human Resource Management</option>
+          <option value="Online Coaching">Online Coaching</option>
+          <option value="Public Speaking">Public Speaking</option>
+          <option value="Sales and Marketing">Sales and Marketing</option>
+          <option value="Software as a Service (SAAS)">Software as a Service (SAAS)</option>
+          <option value="Marketing and Automation">Marketing and Automation</option>
+          <option value="Market Research and Development">Market Research and Development</option>
+
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="touristInfo">Do you have further information you would like to share with us to help us know more about your expectations from this investment tour:</label>
+      <textarea class="form-control" id="touristInfo" name="touristInfo" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="touristEmail">Email address:</label>
+      <input type="email" class="form-control" id="touristEmail" name="touristEmail" placeholder="Enter your email address">
+    </div>
+    <div class="form-group">
+      <label for="touristPhone">Phone No:</label>
+      <input type="text" class="form-control" id="touristPhone" name="touristPhone" placeholder="Enter your phone number">
+    </div>
+    <div class="form-group">
+      <label for="touristLinkedIn">LinkedIn profile:</label>
+      <input type="text" class="form-control" id="touristLinkedIn" name="touristLinkedIn" placeholder="Enter your LinkedIn profile URL">
+    </div>
+    <div class="form-group">
+      <label for="touristFacebook">Facebook profile:</label>
+      <input type="text" class="form-control" id="touristFacebook" name="touristFacebook" placeholder="Enter your Facebook profile URL">
+    </div>
+    <div class="form-group">
+      <label for="touristInstagram">Instagram handle:</label>
+      <input type="text" class="form-control" id="touristInstagram" name="touristInstagram" placeholder="Enter your Instagram handle">
+    </div>
+  </div>
+  
+      <input type="submit" class="btn d-flex add-me border border-dark">
+    </form>
+</div>
+
+<!-- </div> -->
+
+
+
+
+<div id="popupContainer">
+  <div id="popupContent" class="" style="display: grid; justify-content: center;">
+    <i class="fa fa-check bg-success text-white p-4 text-center fs-4">.</i  >
+    <p class="d-flex align-items-center justify-content-center text-center p-4">We have received your message check your email for updates</p>
+    <a href="" id="popupClose" class="btn btn-secondary">Close</button>
+  </div>
+</div>
+
+
+
+
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+  <script src="{% static 'vendor/asset/ajax1.js'%}"> </script>
+  <script src="{% static 'vendor/asset/sript1.js'%}"></script>  
+  <!-- <script src="{% static 'vendor/asset/form.js'%}"></script>  -->
+  <script type="text/javascript">
+// Close the pop-up when close button is clicked
+document.getElementById('popupClose').addEventListener('click', function() {
+  document.getElementById('popupContainer').style.display = 'none';
+  // console.log("done")
+});
+  </script>  
+  <script>
+
+$(document).on('submit', '#individual', function(e){
+    e.preventDefault();
+     $('#loader').show();
+
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:submit_form' %}",
+            data:{
+                individualName:$('#individualName').val(),
+                individualCountry:$('#individualCountry').val(),
+                individualState:$('#individualState').val(),
+                individualInterest:$('#individualInterest').val(),
+                individualSector:$('#individualSector').val(),
+                individualAdditionalInfo:$('#individualAdditionalInfo').val(),
+                individualEmail:$('#individualEmail').val(),
+                individualPhone:$('#individualPhone').val(),
+                individualFacebook:$('#individualFacebook').val(),
+                individualInstagram:$('#individualInstagram').val(),
+                individualLinkedIn:$('#individualLinkedIn').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(data){
+                // alert(data);
+                // console.log(data);
+                 $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+            }
+        }
+    )
+})
+
+
+$(document).on('submit', '#sme', function(e){
+    e.preventDefault();
+
+     $('#loader').show();
+    const formData = new FormData(this);
+    
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:sme_form' %}",
+            data:formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+            responseType: 'blob'  // Set the response type to 'blob'
+          },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+
+            },
+
+         error: function(xhr, textStatus, error) {
+        console.log(xhr.statusText);
+        if (xhr.statusText ==="OK"){
+                $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+
+        }
+        // Handle error response
+      }
+        }
+    )
+})
+
+
+
+
+
+
+
+$(document).on('submit', '#corporate', function(e){
+    e.preventDefault();
+
+     $('#loader').show();
+    const formData = new FormData(this);
+    
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:corporate_form' %}",
+            data:formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+            responseType: 'blob'  // Set the response type to 'blob'
+          },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+
+            },
+
+         error: function(xhr, textStatus, error) {
+        console.log(xhr.statusText);
+        if (xhr.statusText ==="OK"){
+                $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+
+        }
+        // Handle error response
+      }
+        }
+    )
+})
+
+
+
+
+$(document).on('submit', '#mentor', function(e){
+    e.preventDefault();
+
+     $('#loader').show();
+    const formData = new FormData(this);
+    
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:mentor_form' %}",
+            data:formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+            responseType: 'blob'  // Set the response type to 'blob'
+          },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+
+            },
+
+         error: function(xhr, textStatus, error) {
+        console.log(xhr.statusText);
+        if (xhr.statusText ==="OK"){
+                $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+
+        }
+        // Handle error response
+      }
+        }
+    )
+})
+
+
+
+
+$(document).on('submit', '#elearning', function(e){
+    e.preventDefault();
+
+     $('#loader').show();
+    const formData = new FormData(this);
+    
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:elearning_form' %}",
+            data:formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+            responseType: 'blob'  // Set the response type to 'blob'
+          },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+
+            },
+
+         error: function(xhr, textStatus, error) {
+        console.log(xhr.statusText);
+        if (xhr.statusText ==="OK"){
+                $('#loader').hide();
+                document.getElementById('popupContainer').style.display = 'block';
+
+        }
+        // Handle error response
+      }
+        }
+    )
+})
+
+$(document).on('submit', '#tourist', function(e){
+    e.preventDefault();
+
+    $('#loader').show();
+    const formData = new FormData(this);
+
+    // Retrieve the selected options from the multiple select fields
+    const selectedInterests = $('#touristInterest').val();
+    const selectedSectors = $('#touristSector').val();
+
+    // Append the selected options to the form data
+    selectedInterests.forEach((interest) => {
+        formData.append('touristInterest', interest);
+    });
+
+    selectedSectors.forEach((sector) => {
+        formData.append('touristSector', sector);
+    });
+
+    $.ajax(
+        {
+            type: 'POST',
+            url: "{% url 'shareafric_app:tourist' %}",
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                responseType: 'blob'  // Set the response type to 'blob'
+            },
+            success: function(data){
+                console.log(data);
+                $('#loader').hide();
+            },
+            error: function(xhr, textStatus, error) {
+                console.log(xhr.statusText);
+                if (xhr.statusText === "OK"){
+                    $('#loader').hide();
+                    document.getElementById('popupContainer').style.display = 'block';
+                }
+                // Handle error response
+            }
+        }
+    )
+});
+
+</script>
+
+
+
+</body>
+</html>
