@@ -29,7 +29,7 @@ EMAIL_USE_SSL = True  # or True if using SSL
 SECRET_KEY = 'django-insecure-juz1o%wxif83e**2)es#wtkz&c8r+wlh6qfvek%o%!spr%gt7t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

@@ -33,6 +33,31 @@ def main(request):
         'client': client,
         })
 
+def handle_error_page(request, exception):
+    page = Webdata.objects.first()
+    client = Client.objects.all()
+    fact = Facts.objects.first()
+    service = Service.objects.all()
+    skillright = SkillRight.objects.all()
+    skillleft = SkillLeft.objects.all()
+    education = Education.objects.all()
+    experience = Experience.objects.all()
+    portfolio = Portfolio.objects.all()
+    service = Service.objects.all()
+    client = Client.objects.all()  
+    return render(request, 'pages/404.html',{
+        'pages': page,
+        'client': client,
+        'fact': fact,
+        'service': service,
+        'skillright': skillright,
+        'skillleft': skillleft,
+        'education':education,
+        'experience':experience,
+        'portfolio': portfolio,
+        'service': service,
+        'client': client,  # Use the assigned value of 'partners'
+    })
 # def home(request):
 #     return render(request, 'shareafric_app/test.html')
 
