@@ -300,5 +300,5 @@ PORTFOLIO = (
     )
 class Portfolio(models.Model):
     category = models.CharField(max_length=255, choices=PORTFOLIO)
-    link = models.CharField(max_length=255)
+    link = RichTextField()
     image = models.FileField(upload_to='Portfolio')
