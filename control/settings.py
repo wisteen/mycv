@@ -132,7 +132,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Following settings only make sense on production and may break development environments.
-if DEBUG:
+if not DEBUG:
     # Tell Django to copy statics to the `staticfiles` directory
     # in your application directory on Render.
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticall')
